@@ -51,7 +51,7 @@ if(!class_exists('AllSpark')) {
 				return;
 			}
 			
-			add_action('init', array($this, 'init'));
+			$this->add_action('init');
 			
 			//if the main plugin file isn't called index.php, activation hooks will fail
 			register_activation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidActivate'));
