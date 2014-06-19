@@ -133,7 +133,7 @@ if(!class_exists('AllSpark')) {
 			$this->add_action('add_meta_boxes');
 			$this->add_action('load-themes.php', 'themeDidChange');
 			
-			$this->_set_up_forwarding_methods();
+			$this->add_action('admin_enqueue_scripts', 'enqueue_items_for_url');
 		}
 		
 		/**
@@ -167,19 +167,6 @@ if(!class_exists('AllSpark')) {
 			else{
 				return false;
 			}
-		}
-		
-		/** @internal	**/
-		private function _set_up_forwarding_methods(){
-			add_action( "admin_enqueue_scripts",  array($this, '_enqueue_items_for_url'));
-		}
-		
-		/**
-		Enables protected access to methods that 
-		
-		@internal	**/
-		public function _enqueue_items_for_url($url){
-			$this->call('enqueue_items_for_url', array($url));
 		}
 	}
 }
