@@ -9,18 +9,22 @@ if(!class_exists('AllSpark')) {
 
 	abstract class AllSpark{
 		/**  @internal	**/
-		private $version = 0.04;
+		private $version = "0.0.4";
 		
 		/** 
 		The __constuct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
 		
 		@internal	**/
 		protected function __construct($req_allspark_version = false){
-			if($req_allspark_version && $req_allspark_version > $this->version) {
+		
+			if(!$req_allspark_version){
+				$req_allspark_version = $this->required_allspark_version;
+			}
+
+			if($req_allspark_version !== false && !version_compare($req_allspark_version, $this->version, '>=')){
 				trigger_error("The required version ({$req_allspark_version}) of the AllSpark plugin ({$this->version}) was not loaded. Please update your plugins.", E_USER_ERROR);
 				return;
 			}
-			
 			
 			//if the main plugin file isn't called index.php, activation hooks will fail
 			register_activation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidActivate'));
