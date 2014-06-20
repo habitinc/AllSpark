@@ -33,14 +33,18 @@ if(!class_exists('AllSpark')) {
 		/**
 		Add the rewrite rules for APIs
 		
+		If you override this function, ensure you call `super` on it before returning		
+		
 		@internal	**/
 		function pluginDidActivate(){
 			flush_rewrite_rules();
 		}
-		
+
 		/**
 		Clean up the rewrite rules when deactivating the plugin
-	
+		
+		If you override this function, ensure you call `super` on it before returning		
+		
 		@internal	**/
 		function pluginDidDeactivate(){
 			flush_rewrite_rules();
