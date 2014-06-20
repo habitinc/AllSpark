@@ -129,6 +129,9 @@ if(!class_exists('AllSpark')) {
 			}
 			
 			$this->create_settings_shortcut_on_plugin_page();
+			
+			wp_register_style( 'allspark', plugin_dir_url(__FILE__) . '/allspark-resources/style.css', false, '1.0.0' );
+			
 			//Add callbacks for admin pages and script/style registration
 			add_action('admin_menu', function() use ($self){
 				$self->call('add_admin_pages');
