@@ -12,6 +12,11 @@ class AllSparkTestCases extends WP_UnitTestCase {
 		$this->plugin->test = $this;
 	}
 	
+	// implicitly test each one of the add_action calls that aren't connected to anything
+	// also tests that we can instantiate the object at all
+	function test_unused_actions(){
+		$this->assertNotNull(AllSparkTest::getInstance());
+	}
 	
 	function test_add_action_by_string(){
 		$this->plugin->test_add_action_by_string();
@@ -42,7 +47,17 @@ class AllSparkTestCases extends WP_UnitTestCase {
 class AllSparkTest extends AllSpark{
 	
 	var $test;
+	var $required_allspark_version = null;
 	
+	function __construct(){
+		
+		if(rand(0,1)){ //ensure that we're gracefully handling what happens if this isn't defined
+			$this->required_allspark_version = "0.0.4";
+		}
+		
+		parent::__construct();
+	}
+		
 	public function test_add_action_by_string(){	
 		$this->add_action('init', 'dummy_callback');
 		
