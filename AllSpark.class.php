@@ -127,6 +127,8 @@ if(!class_exists('AllSpark')) {
 			if('POST' == $_SERVER['REQUEST_METHOD']){
 				$this->add_action('admin_enqueue_scripts', 'handle_form_post_for_url');
 			}
+			
+			$this->create_settings_shortcut_on_plugin_page();
 			//Add callbacks for admin pages and script/style registration
 			add_action('admin_menu', function() use ($self){
 				$self->call('add_admin_pages');
@@ -141,7 +143,40 @@ if(!class_exists('AllSpark')) {
 		}
 		
 		/**
+		Having a settings URL on your plugin page is a nice little touch. To add it automagically, just create a class variable called `settings_url` and this function will take care of the rest
+		**/
+			
+		private function create_settings_shortcut_on_plugin_page(){
+			
+			//if it's not defined, there's no reason to do anything further
+			if(!isset($this->settings_url)){
+				return false;
 			}
+			
+			//grab the settings url from the subclass
+			$settings_url = $this->settings_url;
+			
+			// the $this is important - we want the subclass, not the super
+			$unique_name = get_class($this) . '_did_attach_settings_link';  
+			
+			//this closure has a `use` declaration to get around the PHP 5.3 lack of `$this` in closures			
+			$filter = function($links, $file)  use ($settings_url, $unique_name){
+						
+				if ($file == basename(dirname(__FILE__)) . '/index.php' && wp_cache_get( $unique_name, __CLASS__ ) == false) {
+						
+					$settings_url = get_bloginfo('wpurl') . '/wp-admin/admin.php?page=' . $settings_url;
+					$settings_link = "<a href='$settings_url'>Settings</a>";
+					array_unshift($links, $settings_link);
+
+					wp_cache_set( $unique_name, true, __CLASS__ );
+				}
+
+				return $links;			
+			};
+			
+			if(!has_filter('plugin_action_links', $filter)){
+				add_filter('plugin_action_links', $filter, 10, 2);
+			}			
 		}
 		
 		/**
