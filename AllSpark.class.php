@@ -11,35 +11,6 @@ if(!class_exists('AllSpark')) {
 		/**  @internal	**/
 		private $version = 0.02;
 		
-		/**  
-		Returns the singleton instance of this plugin class	
-		
-		@staticvar AllSpark $instance The singleton instance of this class 
-		@return AllSpark The singleton instance 	**/
-		public static function getInstance() {
-			static $instance = null;
-			if(null == $instance) {
-				$instance = new static();
-			}
-			
-			return $instance;
-		}
-		
-		/**
-		Prevent cloning (breaks singleton pattern)
-		
-		@internal	**/
-		final private function __clone() {
-			trigger_error('Cannot clone an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);			
-		}
-		
-		/** 
-		Prevent unserializing (breaks singleton pattern)
-		
-		@internal	**/
-		final private function __wakeup() {
-			trigger_error('Cannot unserialize an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);	
-		}
 		
 		/** 
 		The __constuct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
@@ -167,6 +138,36 @@ if(!class_exists('AllSpark')) {
 			else{
 				return false;
 			}
+		}
+		
+		/**  
+		Returns the singleton instance of this plugin class	
+		
+		@staticvar AllSpark $instance The singleton instance of this class 
+		@return AllSpark The singleton instance 	**/
+		public static function getInstance() {
+			static $instance = null;
+			if(null == $instance) {
+				$instance = new static();
+			}
+			
+			return $instance;
+		}
+		
+		/**
+		Prevent cloning (breaks singleton pattern)
+		
+		@internal	**/
+		final private function __clone() {
+			trigger_error('Cannot clone an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);			
+		}
+		
+		/** 
+		Prevent unserializing (breaks singleton pattern)
+		
+		@internal	**/
+		final private function __wakeup() {
+			trigger_error('Cannot unserialize an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);	
 		}
 	}
 }
