@@ -80,6 +80,10 @@ if(!class_exists('AllSpark')) {
 			}
 		}
 		
+		public function addUI($path){
+			require_once($path);
+		}
+		
 		/**
 		Attaches a method on the current object to a WordPress ajax hook. The method name is ajax_[foo] where `foo` is the action name	*
 		
