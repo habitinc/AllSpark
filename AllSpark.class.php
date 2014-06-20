@@ -17,7 +17,7 @@ if(!class_exists('AllSpark')) {
 		@internal	**/
 		protected function __construct($req_allspark_version = false){
 		
-			if(!$req_allspark_version){
+			if(!$req_allspark_version && isset($this->required_allspark_version)){
 				$req_allspark_version = $this->required_allspark_version;
 			}
 
