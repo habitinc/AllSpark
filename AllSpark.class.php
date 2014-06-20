@@ -123,6 +123,10 @@ if(!class_exists('AllSpark')) {
 			$this->add_action('load-themes.php', 'themeDidChange');
 			
 			$this->add_action('admin_enqueue_scripts', 'enqueue_items_for_url');
+			
+			if('POST' == $_SERVER['REQUEST_METHOD']){
+				$this->add_action('admin_enqueue_scripts', 'handle_form_post_for_url');
+			}
 			//Add callbacks for admin pages and script/style registration
 			add_action('admin_menu', function() use ($self){
 				$self->call('add_admin_pages');
