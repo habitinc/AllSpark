@@ -22,12 +22,14 @@ if(!class_exists('AllSpark')) {
 				return;
 			}
 			
-			$this->add_action('init');
 			
 			//if the main plugin file isn't called index.php, activation hooks will fail
 			register_activation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidActivate'));
 			register_deactivation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidDeactivate'));
 			register_uninstall_hook(__FILE__, array($this, 'pluginWillBeDeleted'));
+			
+			$this->add_action('init', '_init', 0, 1);	//ensure our internal init function gets called no matter what
+			$this->add_action('init');					//make it so subclasses can use `init` as well
 		}
 		
 		/**
@@ -114,12 +116,11 @@ if(!class_exists('AllSpark')) {
 		*/
 		
 		/**
-		Handles callbacks from the `init` action
+		Handles callbacks from the `init` action.
 		
 		@internal **/
-		public function init(){
-	
-			$self = $this;
+		public function _init(){
+			$self = $this; //closure hack
 			
 			//Register the most commonly used actions
 			$this->add_action('admin_menu');
