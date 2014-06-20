@@ -70,14 +70,17 @@ if(!class_exists('AllSpark')) {
 		@param string $callback [optional] The class method you wish to be called for this hook
 		 
 		*/
-		protected function add_action($name, $callback = false){
+		protected function add_action($name, $callback = false, $priority = 10){
 		
 			if(!$callback){
 				$callback = $name;
 			}
-		
-			if(method_exists($this, $callback)){
-				add_action($name, array($this, $callback));
+			
+			if(is_object($callback) && ($callback instanceof Closure)){
+				add_action($name, $callback, $priority);
+			}
+			else if(method_exists($this, $callback)){
+				add_action($name, array($this, $callback), $priority);
 			}
 		}
 		
