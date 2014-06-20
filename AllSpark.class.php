@@ -132,11 +132,7 @@ if(!class_exists('AllSpark')) {
 			if('POST' == $_SERVER['REQUEST_METHOD']){
 				$this->add_action('admin_enqueue_scripts', 'handle_form_post_for_url');
 			}
-			
-			$this->create_settings_shortcut_on_plugin_page();
-			
-			wp_register_style( 'allspark', plugin_dir_url(__FILE__) . '/allspark-resources/style.css', false, '1.0.0' );
-			
+
 			//Add callbacks for admin pages and script/style registration
 			add_action('admin_menu', function() use ($self){
 				$self->call('add_admin_pages');
@@ -148,8 +144,14 @@ if(!class_exists('AllSpark')) {
 					$self->call($command);
 				}
 			});
-		}
 		
+			//Set up the settings shortcut feature
+			$this->create_settings_shortcut_on_plugin_page();
+			
+			//Register common AllSpark styles
+			wp_register_style( 'allspark', plugin_dir_url(__FILE__) . '/allspark-resources/style.css', false, '1.0.0' );
+		}
+
 		/**
 		Having a settings URL on your plugin page is a nice little touch. To add it automagically, just create a class variable called `settings_url` and this function will take care of the rest
 		**/
