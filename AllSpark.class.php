@@ -119,7 +119,7 @@ if(!class_exists('AllSpark')) {
 				add_action( 'wp_ajax_nopriv_' . $name, $action);
 			}
 			
-			add_action( 'wp_ajax_' . $name, $action;
+			add_action( 'wp_ajax_' . $name, $action );
 		}
 		
 		/*
