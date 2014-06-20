@@ -27,6 +27,7 @@ if(!class_exists('AllSpark')) {
 			//if the main plugin file isn't called index.php, activation hooks will fail
 			register_activation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidActivate'));
 			register_deactivation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidDeactivate'));
+			register_uninstall_hook(__FILE__, array($this, 'pluginWillBeDeleted'));
 		}
 		
 		/**
@@ -43,6 +44,18 @@ if(!class_exists('AllSpark')) {
 		@internal	**/
 		function pluginDidDeactivate(){
 			flush_rewrite_rules();
+		}
+		
+		/**
+		One last chance to clean everything up before the plugin is erased forever. Be sure to clean up tables and chairs, kids.
+		
+		If you override this function, ensure you call `super` on it before returning		
+		
+		@internal
+		
+		**/
+		function pluginWillBeDeleted(){
+			
 		}
 		
 		/**
