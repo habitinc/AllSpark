@@ -115,6 +115,7 @@ if(!class_exists('AllSpark')) {
 		@internal **/
 		public function init(){
 	
+			$self = $this;
 			$this->add_action('admin_menu');
 			$this->add_action('admin_init');
 			$this->add_action('save_post');
@@ -122,20 +123,20 @@ if(!class_exists('AllSpark')) {
 			$this->add_action('load-themes.php', 'themeDidChange');
 			
 			$this->add_action('admin_enqueue_scripts', 'enqueue_items_for_url');
+			//Add callbacks for admin pages and script/style registration
+			add_action('admin_menu', function() use ($self){
+				$self->call('add_admin_pages');
+			
+				foreach(array(
+					'register_scripts',
+					'register_styles'
+				) as $command){		
+					$self->call($command);
+				}
+			});
 		}
 		
 		/**
-		Handles callbacks from the `admin_menu` action. Fires off events to register scripts and styles for the admin area
-		
-		@internal	**/
-		public function admin_menu(){
-			$this->call('add_admin_pages');
-			
-			foreach(array(
-				'register_scripts',
-				'register_styles'
-			) as $command){		
-				$this->call($command);
 			}
 		}
 		
