@@ -116,6 +116,8 @@ if(!class_exists('AllSpark')) {
 		public function init(){
 	
 			$self = $this;
+			
+			//Register the most commonly used actions
 			$this->add_action('admin_menu');
 			$this->add_action('admin_init');
 			$this->add_action('save_post');
