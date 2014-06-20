@@ -158,6 +158,7 @@ class AllSparkTest extends AllSpark{
 			return true;
 		}
 		
+		//if the only arg is the function name (caused by using call_user_func(array($this, $function_name)))
 		if(func_num_args() == 1 && __FUNCTION__ == func_get_args()[0]){
 			return true;
 		}
