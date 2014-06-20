@@ -41,7 +41,7 @@ if(!class_exists('AllSpark')) {
 		function pluginDidActivate(){
 			flush_rewrite_rules();
 		}
-
+		
 		/**
 		Clean up the rewrite rules when deactivating the plugin
 		
@@ -82,6 +82,22 @@ if(!class_exists('AllSpark')) {
 			}
 		}
 		
+		/**
+		Provides a hack to allow using closures for UI inclusion (which dramatically improves code readability).
+		
+		If you're on PHP < 5.4, you can do something like the following:
+		
+		$self = $this;
+		
+		add_some_menu_page('name', function() use ($self){
+			$self->addUI('path-to-ui-file.php');
+		});
+		
+		And references to $this in that file will refer to the plugin object. Once we make PHP 5.4 a dependency for this project, it'll be trivial to replace $self with $this in all the relevant locations and clean up the code a little.
+		
+		@param string $path The relative path of the UI file you wish to embed
+		
+		*/
 		public function addUI($path){
 			require_once($path);
 		}
@@ -127,8 +143,10 @@ if(!class_exists('AllSpark')) {
 			$this->add_action('add_meta_boxes');
 			$this->add_action('load-themes.php', 'themeDidChange');
 			
+			//Add a hook to allow enqueing scripts and styles for a given URL
 			$this->add_action('admin_enqueue_scripts', 'enqueue_items_for_url');
 			
+			//Add a hook that'll allow handling POST requests for a given URL
 			if('POST' == $_SERVER['REQUEST_METHOD']){
 				$this->add_action('admin_enqueue_scripts', 'handle_form_post_for_url');
 			}
@@ -207,10 +225,10 @@ if(!class_exists('AllSpark')) {
 				return false;
 			}
 		}
-		
+			
 		/**  
 		Returns the singleton instance of this plugin class	
-		
+			
 		@staticvar AllSpark $instance The singleton instance of this class 
 		@return AllSpark The singleton instance 	**/
 		public static function getInstance() {
@@ -218,21 +236,21 @@ if(!class_exists('AllSpark')) {
 			if(null == $instance) {
 				$instance = new static();
 			}
-			
+
 			return $instance;
 		}
-		
-		/**
+
+		/** 
 		Prevent cloning (breaks singleton pattern)
-		
+			
 		@internal	**/
 		final private function __clone() {
 			trigger_error('Cannot clone an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);			
 		}
-		
+
 		/** 
 		Prevent unserializing (breaks singleton pattern)
-		
+			
 		@internal	**/
 		final private function __wakeup() {
 			trigger_error('Cannot unserialize an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);	
