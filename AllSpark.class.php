@@ -94,21 +94,19 @@ if(!class_exists('AllSpark')) {
 		*/
 		protected function listen_for_ajax_action($name, $must_be_logged_in = true){
 			
+			$self = $this;
+			
 			if($must_be_logged_in !== true){
-				add_action( 'wp_ajax_nopriv_' . $name, array($this, 'handle_ajax_action'));
+				add_action( 'wp_ajax_nopriv_' . $name, array($this, function() use ($self){
+					$self->call($_REQUEST['action'], $_REQUEST);
+				}));
 			}
 			
-			add_action( 'wp_ajax_' . $name, array($this, 'handle_ajax_action'));
+			add_action( 'wp_ajax_' . $name, array($this, function() use ($self){
+				$self->call($_REQUEST['action'], $_REQUEST);
+			}));
 		}
 		
-		/**
-		Internal forwarding of AJAX requests from WordPress into this class
-		
-		@internal	**/
-		function handle_ajax_action(){
-			$this->call($_REQUEST['action'], $_REQUEST);
-		}
-				
 		/*
 		**
 		**	WP Callbacks
@@ -192,8 +190,9 @@ if(!class_exists('AllSpark')) {
 		/**
 		Internal command dispatching
 		
+		@todo: When this project has PHP 5.4 as a requirement, make this private
 		@internal	**/
-		private function call($command, $params = null){
+		function call($command, $params = null){
 			if(method_exists($this, $command)){
 				if(is_array($params)){
 					return call_user_func_array(array($this, $command), $params);
