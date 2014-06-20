@@ -9,7 +9,7 @@ if(!class_exists('AllSpark')) {
 
 	abstract class AllSpark{
 		/**  @internal	**/
-		private $version = 0.03;
+		private $version = 0.04;
 		
 		/** 
 		The __constuct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
@@ -111,15 +111,15 @@ if(!class_exists('AllSpark')) {
 			
 			$self = $this;
 			
+			$action = function() use ($self){
+				$self->call($_REQUEST['action'], $_REQUEST);
+			};
+			
 			if($must_be_logged_in !== true){
-				add_action( 'wp_ajax_nopriv_' . $name, array($this, function() use ($self){
-					$self->call($_REQUEST['action'], $_REQUEST);
-				}));
+				add_action( 'wp_ajax_nopriv_' . $name, $action);
 			}
 			
-			add_action( 'wp_ajax_' . $name, array($this, function() use ($self){
-				$self->call($_REQUEST['action'], $_REQUEST);
-			}));
+			add_action( 'wp_ajax_' . $name, $action;
 		}
 		
 		/*
