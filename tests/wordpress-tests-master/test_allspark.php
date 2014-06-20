@@ -41,23 +41,21 @@ class AllSparkTestCases extends WP_UnitTestCase {
 	function test_prohibited_operations(){
 		$this->plugin->test_prohibited_operations();
 	}
+	
+	function test_no_version(){
+		$this->assertNotNull(AllSparkNoVersionTest::getInstance());
+	}
 }
 
+//No version is specified - what happens? Right now, it should be opt-in, meaning nothing should fail
+class AllSparkNoVersionTest extends AllSpark{
+}
 
 class AllSparkTest extends AllSpark{
 	
 	var $test;
-	var $required_allspark_version = null;
+	var $required_allspark_version = "0.0.4";
 	
-	function __construct(){
-		
-		if(rand(0,1)){ //ensure that we're gracefully handling what happens if this isn't defined
-			$this->required_allspark_version = "0.0.4";
-		}
-		
-		parent::__construct();
-	}
-		
 	public function test_add_action_by_string(){	
 		$this->add_action('init', 'dummy_callback');
 		
