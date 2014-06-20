@@ -249,7 +249,15 @@ if(!class_exists('AllSpark')) {
 		final private function __clone() {
 			trigger_error('Cannot clone an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);			
 		}
-
+		
+		/** 
+		Prevent serializing (because we can't unserialize)
+			
+		@internal	**/
+		final private function __sleep() {
+			trigger_error('Cannot serialize an instance of a singleton AllSpark-derived plugin', E_USER_ERROR);	
+		}
+		
 		/** 
 		Prevent unserializing (breaks singleton pattern)
 			
