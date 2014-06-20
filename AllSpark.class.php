@@ -9,8 +9,7 @@ if(!class_exists('AllSpark')) {
 
 	abstract class AllSpark{
 		/**  @internal	**/
-		private $version = 0.02;
-		
+		private $version = 0.03;
 		
 		/** 
 		The __constuct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
