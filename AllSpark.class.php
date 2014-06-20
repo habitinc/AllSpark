@@ -115,7 +115,7 @@ if(!class_exists('AllSpark')) {
 			$self = $this;
 			
 			$action = function() use ($self){
-				$self->call($_REQUEST['action'], $_REQUEST);
+				return $self->call($_REQUEST['action'], $_REQUEST);
 			};
 			
 			if($must_be_logged_in !== true){
