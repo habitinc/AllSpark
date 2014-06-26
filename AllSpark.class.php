@@ -9,7 +9,7 @@ if(!class_exists('AllSpark')) {
 
 	abstract class AllSpark{
 		/**  @internal	**/
-		private $version = "0.0.4";
+		private $version = "0.0.5";
 		
 		/** 
 		The __constuct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
@@ -72,19 +72,41 @@ if(!class_exists('AllSpark')) {
 		
 		@param string $name The name of the action you wish to hook into
 		@param string $callback [optional] The class method you wish to be called for this hook
-		 
+		@param int $priority [optional] Used to specify the order in which the functions associated with a particular action are executed. Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the filter.  
+		@param int $accepted_args [optional] The number of arguments the hooked function accepts. In WordPress 1.5.1+, hooked functions can take extra arguments that are set when the matching do_action() or apply_filters() call is run.
 		*/
-		protected function add_action($name, $callback = false, $priority = 10){
+		protected function add_action($name, $callback = false, $priority = 10, $accepted_args = 1){
 		
 			if(!$callback){
 				$callback = $name;
 			}
 			
 			if(is_object($callback) && ($callback instanceof Closure)){
-				add_action($name, $callback, $priority);
+				add_action($name, $callback, $priority, $accepted_args);
 			}
 			else if(method_exists($this, $callback)){
-				add_action($name, array($this, $callback), $priority);
+				add_action($name, array($this, $callback), $priority, $accepted_args);
+			}
+		}
+		
+		/**
+		Attaches a method on the current object to a WordPress hook. By default, the method name is the same as the hook name. In some cases, this behavior may not be desirable and can be overridden.
+		
+		@param string $name The name of the action you wish to hook into
+		@param string $callback [optional] The class method you wish to be called for this hook
+		@param int $priority [optional] Used to specify the order in which the functions associated with a particular action are executed. Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the filter.  
+		@param int $accepted_args [optional] The number of arguments the function(s) accept(s). In WordPress 1.5.1 and newer hooked functions can take extra arguments that are set when the matching apply_filters() call is run. 
+		*/
+		protected function add_filter($name, $callback = false, $priority = 10, $accepted_args = 1) {
+			if(!$callback){
+				$callback = $name;
+			}
+			
+			if(is_object($callback) && ($callback instanceof Closure)){
+				add_filter($name, $callback, $priority, $accepted_args);
+			}
+			else if(method_exists($this, $callback)) {
+				add_filter($name, array($this, $callback), $priority, $accepted_args);
 			}
 		}
 		
