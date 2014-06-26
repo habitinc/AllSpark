@@ -1,10 +1,7 @@
 Allspark
 ========
 
-A pretty good Base Class for WordPress plugins
-
-##Description
-AllSpark is a base class for WordPress plugins built by Habit. It's designed to simplify plugin development by automating common tasks. Features include:
+AllSpark is a base class for WordPress plugins built by Habit. It's designed to simplify plugin development by automating common tasks, and defining some simple conventions. Features include:
 
 * Automatic handling of common actions and hooks - subclasses use the Inversion of Control pattern to handle hooks as functions
 * Automatic registration of activation and deactivation hooks
