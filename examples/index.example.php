@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: My Great Plugin
-Plugin URI: http://ignitionmedia.ca
+Plugin URI: http://habithq.ca
 Description: Provides some sweet functionality
 Version: 1.0
-Author: Ignition Media
-Author URI: http://ignitiomedia.ca
+Author: Habit
+Author URI: http://habithq.ca
 */
 
 if ( ! defined('ABSPATH') ) {
@@ -13,4 +13,15 @@ if ( ! defined('ABSPATH') ) {
 }
 
 require_once 'myplugin.class.php';
-$plugin = new MyPlugin();
+
+
+/*
+ *	If you have any functions that are intended to be used outside this plugin 
+ *	(i.e. in theme development), define them here as global functions
+ */
+
+if(!function_exists("my_hello_world")) {
+	function my_hello_world() {
+		return MyPlugin::getInstance().my_hello_world();
+	}
+}

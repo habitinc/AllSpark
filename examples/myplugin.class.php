@@ -1,18 +1,50 @@
 <?php
 
-include('AllSpark.class.php');
+if(!class_exists('AllSpark')){
+	require_once 'AllSpark.class.php';
+}
 
 class MyPlugin extends AllSpark
 {
-	public function __construct(){
+	//Set to the minimum required AllSpark version
+	protected $required_allspark_version = '0.0.5';
+
+	/**
+	 *	Plugin constructor
+	 *	
+	 *	Set up any local data variables and attach any WP hooks that must be done 
+	 *	prior to init.
+	 */
+	protected function __construct(){	//__construct() should be protected, as it should not be called outside of get_instance()
+		
 		//If you're overriding __construct, ensure that you call it's parent's initializer
 		parent::__construct();
-		$this->listen_for_api_action('my_api_action', 'do_api_action');	
 	}
 
-	//function that will be called when visiting the /my_api_action URL
-	protected function do_api_action(){
-			
+	/**
+	 *	Plugin initialization.
+	 *
+	 *	Perform any tasks to finalize plugin setup. Automatically called as part of
+	 *	the WP init action, this is where you would want to setup any custom post
+	 *	types or add additional WP hooks.
+	 */
+	public function init() {
+		$this->add_action('wp_footer');
+	}
+
+	/** 
+	 *	Function that will be called as part of an action
+	 */
+	public function wp_footer() {
+		echo "<small style='position: absolute; top: 50px; right: 0; z-index: 999;'>Hello World</small>";
+	}
+	
+	/**
+	 *	Function that can be accessed through a shortcut method defined in the index.php
+	 */
+	public function my_hello_world(){
+		echo "Hello World";
 	}
 }
-?>
+
+MyPlugin::getInstance();
