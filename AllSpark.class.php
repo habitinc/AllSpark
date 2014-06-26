@@ -21,7 +21,7 @@ if(!class_exists('AllSpark')) {
 				$req_allspark_version = $this->required_allspark_version;
 			}
 
-			if($req_allspark_version !== false && !version_compare($req_allspark_version, $this->version, '>=')){
+			if($req_allspark_version !== false && !version_compare($req_allspark_version, $this->version, '<=')){
 				trigger_error("The required version ({$req_allspark_version}) of the AllSpark plugin ({$this->version}) was not loaded. Please update your plugins.", E_USER_ERROR);
 				return;
 			}
