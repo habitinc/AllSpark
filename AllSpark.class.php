@@ -124,10 +124,16 @@ if(!class_exists('AllSpark')) {
 		And references to $this in that file will refer to the plugin object. Once we make PHP 5.4 a dependency for this project, it'll be trivial to replace $self with $this in all the relevant locations and clean up the code a little.
 		
 		@param string $path The relative path of the UI file you wish to embed
-		
+		@param boolean $isRelativePath [optional] True if we should treat the $path parameter as relative to the implementing plugin (the least-surprising behaviour)
 		*/
-		public function addUI($path){
-			require_once($path);
+		public function addUI($path, $isRelativePath = true){
+			if($isRelativePath) {
+				$classInfo = new ReflectionClass($this);
+				require dirname($classInfo->getFileName()).'/'.$path;
+			}
+			else {
+				require $path;
+			}
 		}
 		
 		/**
