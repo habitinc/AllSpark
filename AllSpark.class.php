@@ -9,30 +9,65 @@ if(!class_exists('AllSpark')) {
 
 	abstract class AllSpark{
 		/**  @internal	**/
-		private $version = "0.0.5";
+		private $version = "0.0.6";
+		
+		/** Base file for plugin @see _loadPluginInfo() @internal **/
+		protected $pluginBase = false;
+		
+		/** Plugin metadata @see _loadPluginInfo() @internal **/
+		protected $pluginInfo = false;
 		
 		/** 
-		The __constuct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
+		The __construct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
 		
 		@internal	**/
 		protected function __construct($req_allspark_version = false){
-		
+			//If the required version param wasn't passed to the contructor, but was defined by the base class, we can use that instead.
 			if(!$req_allspark_version && isset($this->required_allspark_version)){
 				$req_allspark_version = $this->required_allspark_version;
 			}
-
+			
+			//Make sure AllSpark is running at least the version specified by the implementing plugin
 			if($req_allspark_version !== false && !version_compare($req_allspark_version, $this->version, '<=')){
 				trigger_error("The required version ({$req_allspark_version}) of the AllSpark plugin ({$this->version}) was not loaded. Please update your plugins.", E_USER_ERROR);
 				return;
 			}
 			
-			//if the main plugin file isn't called index.php, activation hooks will fail
-			register_activation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidActivate'));
-			register_deactivation_hook( dirname(__FILE__) . '/index.php', array($this, 'pluginDidDeactivate'));
-			//register_uninstall_hook(__FILE__, array($this, 'pluginWillBeDeleted'));
+			$this->_loadPluginInfo();
+			
+			//Register plugin hooks
+			register_activation_hook($this->pluginBase, array($this, 'pluginDidActivate'));
+			register_deactivation_hook($this->pluginBase, array($this, 'pluginDidDeactivate'));
+			//register_uninstall_hook($this->pluginBase, array($this, 'pluginWillBeDeleted'));
 			
 			$this->add_action('init', '_init', 0, 1);	//ensure our internal init function gets called no matter what
 			$this->add_action('init');					//make it so subclasses can use `init` as well
+		}
+		
+		/**
+		Attempts to automatically determine the implementing class' plugin base file.
+		
+		Function is normally called during the __construct phase of plugin setup. After calling, the protected members
+		$pluginBase and $pluginInfo should be set to their appropriate values. If you need to override this function 
+		in an implementing class (i.e. if this generic code fails to properly detect the plugin base), have your function
+		set $this->pluginBase to the path of the base plugin file (normally something like 'my-plugin/index.php') and 
+		$this->pluginInfo to an array of metadata (see the example output for the get_plugins function in the WP Codex)
+		
+		*/
+		protected function _loadPluginInfo() {
+			if (!function_exists( 'get_plugins' )) {
+				//To use get_plugins on the front-end, this file needs to be included
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			
+			//Determine the location of the implementing class, and try to find the plugin base file in that directory
+			$classInfo = new ReflectionClass($this);
+			$pluginRootDir = '/'.explode( '/', plugin_basename($classInfo->getFileName()))[0];
+			$pluginInfo = get_plugins($pluginRootDir);
+			
+			//Set our protected members
+			$this->pluginBase = $pluginRootDir . '/' . array_pop(array_keys($pluginInfo));
+			$this->pluginInfo = array_pop($pluginInfo);
 		}
 		
 		/**
@@ -64,7 +99,6 @@ if(!class_exists('AllSpark')) {
 		
 		**/
 		function pluginWillBeDeleted(){
-			
 		}
 		
 		/**
@@ -224,7 +258,7 @@ if(!class_exists('AllSpark')) {
 			//this closure has a `use` declaration to get around the PHP 5.3 lack of `$this` in closures			
 			$filter = function($links, $file)  use ($settings_url, $unique_name){
 						
-				if ($file == basename(dirname(__FILE__)) . '/index.php' && wp_cache_get( $unique_name, __CLASS__ ) == false) {
+				if ($file == $this->pluginBase && wp_cache_get( $unique_name, __CLASS__ ) == false) {
 						
 					$settings_url = get_bloginfo('wpurl') . '/wp-admin/admin.php?page=' . $settings_url;
 					$settings_link = "<a href='$settings_url'>Settings</a>";
