@@ -1,13 +1,13 @@
 <?php
 
 if(!class_exists('AllSpark')){
-	require_once 'AllSpark.class.php';
+	require_once 'AllSpark/AllSpark.class.php';
 }
 
 class MyPlugin extends AllSpark
 {
 	//Set to the minimum required AllSpark version
-	protected $required_allspark_version = '0.0.5';
+	protected $required_allspark_version = '0.0.7';
 
 	/**
 	 *	Plugin constructor
@@ -30,6 +30,10 @@ class MyPlugin extends AllSpark
 	 */
 	public function init() {
 		$this->add_action('wp_footer');
+		
+		//Setup update server
+		$this->updateBlockWP = true; //Block regular WP updates
+		//$this->updateUseCustom = 'http://localhost/wp_private_update/update.php'; //Give a URL to the update server
 	}
 
 	/** 

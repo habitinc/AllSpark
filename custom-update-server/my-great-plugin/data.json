@@ -1,0 +1,17 @@
+{
+	"slug": "my-great-plugin",
+	"name": "My Great Plugin - AllSpark Example Plugin",
+	"version": "1.2",
+	"last_updated": "2014-07-03",
+	"requires": "3.9",
+	"tested": "3.9.1",
+	"download_link": "http://localhost/wp_private_update/my-great-plugin/test-1.1.zip",
+	"sections": {
+		"description": "Plugin description would appear here",
+		"installation": "Installation instructions would appear here",
+		"faq": "Plugin FAQs would appear here",
+		"screenshots": "Plugin Screenshots are linked to here",
+		"changelog": "Plugin changelog listed here",
+		"other_notes": "Any other notes can be listed here"	
+	}
+}
