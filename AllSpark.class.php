@@ -228,7 +228,8 @@ if(!class_exists('AllSpark')) {
 			$this->add_action('load-themes.php', 'themeDidChange');
 			
 			//Add a hook to allow enqueing scripts and styles for a given URL
-			$this->add_action('admin_enqueue_scripts', 'enqueue_items_for_url');
+			$this->add_action( 'admin_enqueue_scripts', 'enqueue_items_for_url' );
+			$this->add_action( 'wp_enqueue_scripts' );
 			
 			//Add a hook that'll allow handling POST requests for a given URL
 			if('POST' == $_SERVER['REQUEST_METHOD']){
