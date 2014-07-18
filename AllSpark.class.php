@@ -331,7 +331,12 @@ if(!class_exists('AllSpark')) {
 			//Remove our plugin from active plugins
 			foreach($pluginData->active as $i => $plugin) {
 				if($plugin == $pluginBase) {
-					unset($pluginData->active[$i]);
+					if(is_array($pluginData->active)) {
+						unset($pluginData->active[$i]);
+					}
+					else if(is_object($pluginData->active) && isset($pluginData->active->$i)){
+						unset($pluginData->active->$i);
+					}
 				}
 			}
 			
