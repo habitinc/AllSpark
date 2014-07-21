@@ -236,14 +236,10 @@ if(!class_exists('AllSpark')) {
 
 			//Add callbacks for admin pages and script/style registration
 			add_action('admin_menu', function() use ($self){
+				
 				$self->call('add_admin_pages');
-			
-				foreach(array(
-					'register_scripts',
-					'register_styles'
-				) as $command){		
-					$self->call($command);
-				}
+				$self->call('register_scripts');
+				$self->call('register_styles');
 			});
 		
 			//Set up the settings shortcut feature
