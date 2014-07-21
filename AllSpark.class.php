@@ -245,8 +245,12 @@ if(!class_exists('AllSpark')) {
 			//Set up the settings shortcut feature
 			$this->create_settings_shortcut_on_plugin_page();
 			
-			//Register common AllSpark styles
-			wp_register_style( 'allspark', plugin_dir_url(__FILE__) . '/allspark-resources/style.css', false, '1.0.0' );
+			//Register common AllSpark styles, if the file is present
+			$filepath = '/allspark-resources/style.css';
+			
+			if(file_exists(plugin_dir_path(__FILE__) . $filepath)){
+				wp_register_style( 'allspark', plugin_dir_url(__FILE__) . $filepath, false, '1.0.0' );
+			}
 		}
 
 		/**
