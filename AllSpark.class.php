@@ -1,4 +1,9 @@
 <?php
+/**
+* AllSpark
+*
+* A pretty good base class for WordPress plugins
+*/
 
 if(!class_exists('AllSpark')) {	
 	
@@ -6,19 +11,26 @@ if(!class_exists('AllSpark')) {
 	if(!version_compare(PHP_VERSION, '5.3.0', '>=')) {
 		trigger_error('Cannot load AllSpark plugin class: Requires at least PHP 5.3. Derived plugins may fail.', E_USER_WARNING);
 	}
-
+	
+	/**
+	* A pretty good base class for WordPress plugins
+	*/
+	
 	abstract class AllSpark{
 
 		/**  @internal	**/
 		const VERSION = "0.0.7";
 		
-		/** Base file for plugin @see _loadPluginInfo() @internal */
+		/** Base file for plugin @see _loadPluginInfo()
+		@internal */
 		protected $pluginBase = false;
 		
-		/** Plugin metadata @see _loadPluginInfo() @internal */
+		/** Plugin metadata @see _loadPluginInfo()
+		@internal */
 		protected $pluginInfo = false;
 		
-		/** Plugin Slug @see _loadPluginInfo() @internal */
+		/** Plugin Slug @see _loadPluginInfo()
+		@internal */
 		protected $pluginSlug = false;
 		
 		/** Flag to block checking WP for updates to this plugin. */
@@ -26,6 +38,25 @@ if(!class_exists('AllSpark')) {
 		
 		/** Flag to enable checking for updates in a custom plugin repository */
 		protected $updateUseCustom = false;
+		
+		/**
+		*
+		* Override the settings_url in your subclass to automatically enable a settings link in the plugin list
+		* Example:
+		* 
+		* ```php
+		*protected $settings_url = "espn-feed";
+		*
+		*public function admin_menu(){
+		*   $self = $this;
+		*
+		*   $ret = add_options_page( 'My Plugin', 'My Plugin', 'moderate_comments', $this->settings_url, function() use($self){
+		*      $self->addUI('ui/admin.php');
+		*   });	
+		*}
+		*```	
+		*/
+		protected $settings_url;
 		
 		/** 
 		The __construct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
@@ -67,7 +98,7 @@ if(!class_exists('AllSpark')) {
 		in an implementing class (i.e. if this generic code fails to properly detect the plugin base), have your function
 		set $this->pluginBase to the path of the base plugin file (normally something like 'my-plugin/index.php') and 
 		$this->pluginInfo to an array of metadata (see the example output for the get_plugins function in the WP Codex)
-		
+		@internal
 		*/
 		protected function _loadPluginInfo() {
 			if (!function_exists( 'get_plugins' )) {
@@ -161,17 +192,20 @@ if(!class_exists('AllSpark')) {
 		}
 		
 		/**
-		Provides a hack to allow using closures for UI inclusion (which dramatically improves code readability).
+		*
+		* Provides a hack to allow using closures for UI inclusion (which dramatically improves code readability).
+		*
+		* If you're on PHP < 5.4, you can do something like the following:
+		*
+		*```php
+		*$self = $this;
+		*
+		*add_some_menu_page('name', function() use ($self){
+		*    $self->addUI('path-to-ui-file.php');
+		*});
+		*```
 		
-		If you're on PHP < 5.4, you can do something like the following:
-		
-		$self = $this;
-		
-		add_some_menu_page('name', function() use ($self){
-			$self->addUI('path-to-ui-file.php');
-		});
-		
-		And references to $this in that file will refer to the plugin object. Once we make PHP 5.4 a dependency for this project, it'll be trivial to replace $self with $this in all the relevant locations and clean up the code a little.
+		And references to $this in that file will refer to the plugin object. Once we make PHP 5.4 a dependency for this project, it'll be trivial to replace `$self` with `$this` in all the relevant locations and clean up the code a little.
 		
 		@param string $path The relative path of the UI file you wish to embed
 		@param boolean $isRelativePath [optional] True if we should treat the $path parameter as relative to the implementing plugin (the least-surprising behaviour)
@@ -187,10 +221,10 @@ if(!class_exists('AllSpark')) {
 		}
 		
 		/**
-		Attaches a method on the current object to a WordPress ajax hook. The method name is ajax_[foo] where `foo` is the action name	*
+		Attaches a method on the current object to a WordPress ajax hook. The method name is ajax_[foo] where `foo` is the action name
 		
 		@param string $name The name of the action you wish to hook into
-		 
+		@param boolean $must_be_logged_in [optional] A flag to indicate whether the user must be currently logged on the admin side in order for the call to work. Defaults to true
 		*/
 		protected function listen_for_ajax_action($name, $must_be_logged_in = true){
 			
@@ -255,6 +289,8 @@ if(!class_exists('AllSpark')) {
 
 		/**
 		Having a settings URL on your plugin page is a nice little touch. To add it automagically, just create a class variable called `settings_url` and this function will take care of the rest
+		
+		@internal
 		**/
 			
 		private function create_settings_shortcut_on_plugin_page(){
