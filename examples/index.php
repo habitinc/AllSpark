@@ -22,6 +22,6 @@ require_once 'myplugin.class.php';
 
 if(!function_exists("my_hello_world")) {
 	function my_hello_world() {
-		return MyPlugin::getInstance().my_hello_world();
+		return MyPlugin::getInstance()->my_hello_world();
 	}
 }

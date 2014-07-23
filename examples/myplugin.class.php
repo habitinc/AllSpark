@@ -4,8 +4,8 @@ if(!class_exists('AllSpark')){
 	require_once 'AllSpark/AllSpark.class.php';
 }
 
-class MyPlugin extends AllSpark
-{
+class MyPlugin extends AllSpark {
+	
 	//Set to the minimum required AllSpark version
 	protected $required_allspark_version = '0.0.7';
 
@@ -51,4 +51,9 @@ class MyPlugin extends AllSpark
 	}
 }
 
+
+/**
+ * Always call getInstance at the end of the file:
+ *  this instantiates your plugin and registers various hooks that you'll use later
+ */
 MyPlugin::getInstance();
