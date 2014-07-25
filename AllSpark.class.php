@@ -118,13 +118,15 @@ if(!class_exists('AllSpark')) {
 		}
 		
 		/**
-		Add the rewrite rules for APIs
-		
+		Add the rewrite rules for APIs. And if we're using custom updates - remove any temporary plugin update info 
 		If you override this function, ensure you call `super` on it before returning		
 		
 		@internal	**/
 		function pluginDidActivate(){
 			flush_rewrite_rules();
+			
+			if( $this->updateBlockWP || $this->updateUseCustom )
+				delete_site_transient( 'update_plugins' );
 		}
 		
 		/**
