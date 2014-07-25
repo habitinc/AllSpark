@@ -112,9 +112,11 @@ if(!class_exists('AllSpark')) {
 			$pluginInfo = get_plugins($pluginRootDir);
 			
 			//Set our protected members
-			$this->pluginBase = substr($pluginRootDir . '/' . array_pop(array_keys($pluginInfo)), 1);;
-			$this->pluginInfo = array_pop($pluginInfo);
-			$this->pluginSlug = sanitize_title_with_dashes($this->pluginInfo['Name']);
+			$pluginNames = array_keys( $pluginInfo );
+			$name = array_pop( $pluginNames );
+			$this->pluginBase = substr( $pluginRootDir . '/' . $name, 1 );
+			$this->pluginInfo = array_pop( $pluginInfo );
+			$this->pluginSlug = sanitize_title_with_dashes( $this->pluginInfo['Name'] );
 		}
 		
 		/**
