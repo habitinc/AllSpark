@@ -108,9 +108,9 @@ if(!class_exists('AllSpark')) {
 			
 			//Determine the location of the implementing class, and try to find the plugin base file in that directory
 			$classInfo = new ReflectionClass($this);
-			$pluginRootDir = '/'.explode( '/', plugin_basename($classInfo->getFileName()));
-			$pluginRootDir = $pluginRootDir[0];
-			$pluginInfo = get_plugins($pluginRootDir);
+			$pluginRootDir = explode( '/', plugin_basename($classInfo->getFileName()) );
+			$pluginRootDir = '/' . $pluginRootDir[0];
+			$pluginInfo = get_plugins( $pluginRootDir );
 			
 			//Set our protected members
 			$pluginNames = array_keys( $pluginInfo );
