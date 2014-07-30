@@ -79,7 +79,6 @@ if(!class_exists('AllSpark')) {
 			//Register plugin hooks
 			register_activation_hook($this->pluginBase, array($this, 'pluginDidActivate'));
 			register_deactivation_hook($this->pluginBase, array($this, 'pluginDidDeactivate'));
-			register_uninstall_hook($this->pluginBase, array($this, 'pluginWillBeDeleted'));
 			
 			$this->add_action('init', '_init', 0, 1);	//ensure our internal init function gets called no matter what
 			$this->add_action('init');					//make it so subclasses can use `init` as well
@@ -132,26 +131,6 @@ if(!class_exists('AllSpark')) {
 				delete_site_transient( 'update_plugins' );
 		}
 		
-		/**
-		Clean up the rewrite rules when deactivating the plugin
-		
-		If you override this function, ensure you call `super` on it before returning		
-		
-		@internal	**/
-		function pluginDidDeactivate(){
-			flush_rewrite_rules();
-		}
-		
-		/**
-		One last chance to clean everything up before the plugin is erased forever. Be sure to clean up tables and chairs, kids.
-		
-		If you override this function, ensure you call `super` on it before returning		
-		
-		@internal
-		
-		**/
-		function pluginWillBeDeleted(){
-		}
 		
 		/**
 		Attaches a method on the current object to a WordPress hook. By default, the method name is the same as the hook name. In some cases, this behavior may not be desirable and can be overridden.
