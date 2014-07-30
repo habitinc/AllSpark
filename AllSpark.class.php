@@ -79,7 +79,7 @@ if(!class_exists('AllSpark')) {
 			//Register plugin hooks
 			register_activation_hook($this->pluginBase, array($this, 'pluginDidActivate'));
 			register_deactivation_hook($this->pluginBase, array($this, 'pluginDidDeactivate'));
-			//register_uninstall_hook($this->pluginBase, array($this, 'pluginWillBeDeleted'));
+			register_uninstall_hook($this->pluginBase, array($this, 'pluginWillBeDeleted'));
 			
 			$this->add_action('init', '_init', 0, 1);	//ensure our internal init function gets called no matter what
 			$this->add_action('init');					//make it so subclasses can use `init` as well
