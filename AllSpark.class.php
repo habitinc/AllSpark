@@ -131,6 +131,13 @@ if(!class_exists('AllSpark')) {
 				delete_site_transient( 'update_plugins' );
 		}
 		
+		/**
+		Clean up the rewrite rules when deactivating the plugin
+		If you override this function, ensure you call `super` on it before returning
+		@internal **/
+		function pluginDidDeactivate(){
+			flush_rewrite_rules();
+		}
 		
 		/**
 		Attaches a method on the current object to a WordPress hook. By default, the method name is the same as the hook name. In some cases, this behavior may not be desirable and can be overridden.
