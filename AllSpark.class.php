@@ -148,17 +148,7 @@ if(!class_exists('AllSpark')) {
 		@param int $accepted_args [optional] The number of arguments the hooked function accepts. In WordPress 1.5.1+, hooked functions can take extra arguments that are set when the matching do_action() or apply_filters() call is run.
 		*/
 		protected function add_action($name, $callback = false, $priority = 10, $accepted_args = 1){
-		
-			if(!$callback){
-				$callback = $name;
-			}
-			
-			if(is_object($callback) && ($callback instanceof Closure)){
-				add_action($name, $callback, $priority, $accepted_args);
-			}
-			else if(method_exists($this, $callback)){
-				add_action($name, array($this, $callback), $priority, $accepted_args);
-			}
+			return $this->add_hook('action', $name, $callback, $priority, $accepted_args);
 		}
 		
 		/**
@@ -170,15 +160,25 @@ if(!class_exists('AllSpark')) {
 		@param int $accepted_args [optional] The number of arguments the function(s) accept(s). In WordPress 1.5.1 and newer hooked functions can take extra arguments that are set when the matching apply_filters() call is run. 
 		*/
 		protected function add_filter($name, $callback = false, $priority = 10, $accepted_args = 1) {
+			return $this->add_hook('filter', $name, $callback, $priority, $accepted_args);			
+		}
+		
+		/* Abstracts the minor differences between add_action and add_hook
+		@internal */
+		private function add_hook($type, $name, $callback, $priority, $accepted_args){
+			
 			if(!$callback){
 				$callback = $name;
 			}
+						
+			//Which hook-adding function do we use?
+			$hook_add_function = 'add_' . $type;
 			
 			if(is_object($callback) && ($callback instanceof Closure)){
-				add_filter($name, $callback, $priority, $accepted_args);
+				$hook_add_function($name, $callback, $priority, $accepted_args);
 			}
 			else if(method_exists($this, $callback)) {
-				add_filter($name, array($this, $callback), $priority, $accepted_args);
+				$hook_add_function($name, array($this, $callback), $priority, $accepted_args);
 			}
 		}
 		
