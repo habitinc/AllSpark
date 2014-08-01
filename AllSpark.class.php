@@ -216,20 +216,26 @@ if(!class_exists('AllSpark')) {
 		
 		@param string $name The name of the action you wish to hook into
 		@param boolean $must_be_logged_in [optional] A flag to indicate whether the user must be currently logged on the admin side in order for the call to work. Defaults to true
+		@param Closure $callback [optional] Allows you to use a closure to define what happens on the ajax action. If none is defined, a function name will be called on your class corresponding to the name you provide
 		*/
-		protected function listen_for_ajax_action($name, $must_be_logged_in = true){
+		protected function listen_for_ajax_action($name, $must_be_logged_in = true, $callback = null){
 			
 			$self = $this;
-			
-			$action = function() use ($self){
-				return $self->call($_REQUEST['action'], $_REQUEST);
-			};
+			$prefix = 'wp_ajax_';
 			
 			if($must_be_logged_in !== true){
-				add_action( 'wp_ajax_nopriv_' . $name, $action);
+				$prefix = 'wp_ajax_nopriv_';
+			}				
+			
+			
+			//If no callback is specified, use traditional WP action methods
+			if(is_null($callback)){ 
+				$callback = function() use ($self){
+					return $self->call($_REQUEST['action'], $_REQUEST);
+				};
 			}
 			
-			add_action( 'wp_ajax_' . $name, $action );
+			$this->add_action( $prefix . $name, $callback);			
 		}
 		
 		/*
