@@ -3,6 +3,7 @@ Allspark
 
 [API Documentation](http://habitinc.github.io/AllSpark/)
 
+[![Code Climate](https://codeclimate.com/github/habitinc/AllSpark/badges/gpa.svg)](https://codeclimate.com/github/habitinc/AllSpark)
 
 AllSpark is a base class for WordPress plugins built by Habit. It's designed to simplify plugin development by automating common tasks, and defining some simple conventions. Features include:
 
