@@ -19,7 +19,7 @@ if(!class_exists('AllSpark')) {
 	abstract class AllSpark{
 
 		/**  @internal	**/
-		const VERSION = "0.0.7";
+		const VERSION = "0.0.8";
 		
 		/** Base file for plugin @see _loadPluginInfo()
 		@internal */
@@ -74,6 +74,7 @@ if(!class_exists('AllSpark')) {
 				return;
 			}
 			
+			//Figure out what plugin we are today
 			$this->_loadPluginInfo();
 			
 			//Register plugin hooks
@@ -125,6 +126,7 @@ if(!class_exists('AllSpark')) {
 		
 		@internal	**/
 		function pluginDidActivate(){
+			$this->register_post_types();
 			flush_rewrite_rules();
 			
 			if( $this->updateBlockWP || $this->updateUseCustom )
@@ -276,6 +278,9 @@ if(!class_exists('AllSpark')) {
 			//Set up the settings shortcut feature
 			$this->create_settings_shortcut_on_plugin_page();
 			
+			//Register Custom Post Types
+			$this->register_post_types();
+			
 			//Register common AllSpark styles, if the file is present
 			$filepath = '/allspark-resources/style.css';
 			
@@ -283,6 +288,16 @@ if(!class_exists('AllSpark')) {
 				wp_register_style( 'allspark', plugin_dir_url(__FILE__) . $filepath, false, '1.0.0' );
 			}
 		}
+
+		/**
+		Registers any custom post types or custom taxonomies used by the plugin.
+		
+		Custom post types (and taxonomies) must be activated during the init action, 
+		as well as just before the flush_rewrite_rules() call during plugin 
+		activation. AllSpark will handle calling at the correct times if this function
+		is overridden in your implementing class.
+		*/
+		protected function register_post_types(){ /* NOP - To be overridden by implementing plugin */ }
 
 		/**
 		Having a settings URL on your plugin page is a nice little touch. To add it automagically, just create a class variable called `settings_url` and this function will take care of the rest
