@@ -5,7 +5,7 @@
  *	Implementation of a WP Plugin update server for AllSpark derived plugins
  */
 
-define('UPDATE_SERVER_VERSION', '1-ironhide');
+define('DEBUG', false);
  
 $ret = new stdClass();
 $ret->status = 'ok';
@@ -35,11 +35,13 @@ else {
 	//TODO: If we want to implement any sort of automatic-github-zipping, or download counters (or anything else fancy), can do it here
 	
 	if(isset($ret->data->sections)) {
-		if(!isset($ret->data->sections->other_notes)) {
-			$ret->data->sections->other_notes = '';
+		if(DEBUG) {
+			if(!isset($ret->data->sections->other_notes)) {
+				$ret->data->sections->other_notes = '';
+			}
+			$ret->data->sections->other_notes .= "<p><em>Served by ".$_SERVER['HTTP_HOST']."</em></p>";
 		}
-		$ret->data->sections->other_notes .= "<p><em>Served by Update Server v".UPDATE_SERVER_VERSION." running on ".$_SERVER['HTTP_HOST']."</em></p>";
-		
+	
 		//WP needs this as a PHP associative array, which isn't technically possible in JSON. So, we cheat a bit.
 		$ret->data->sections = get_object_vars($ret->data->sections);
 	}
@@ -47,3 +49,11 @@ else {
 }
 
 echo json_encode($ret);
+
+if(DEBUG) {
+	$ret->__request = $_REQUEST;
+	$ret->__timestamp = date('Z');
+	$fp = fopen('debug.log', 'a');
+	fwrite($fp, json_encode($ret)."\n");
+	fclose($fp);
+}
