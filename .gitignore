@@ -2,3 +2,4 @@
 .DS_Store
 /wordpress/
 custom-update-server/debug.log
+custom-update-server/update-config.php
