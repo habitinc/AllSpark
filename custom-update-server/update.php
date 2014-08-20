@@ -29,8 +29,11 @@ if(isset($_REQUEST['stats'])) {
 				$pluginData = json_decode(file_get_contents(PLUGIN_BASE.$name.'/data.json'));
 				
 				$pluginVersions[$name] = array(
-					"version" => $pluginData->version,
-					"updated" => $pluginData->last_updated
+					"name"          => $pluginData->name,
+					"homepage"      => $pluginData->homepage,
+					"version"       => $pluginData->version,
+					"updated"       => $pluginData->last_updated,
+					"download_link" => $pluginData->download_link,
 				);
 			}
 		}
@@ -38,7 +41,6 @@ if(isset($_REQUEST['stats'])) {
 		
 	}
 	catch(Exception $e) {
-		var_dump($e);
 		http_response_code(500);
 		$ret->status = 'error';
 		$ret->errCode = '500';

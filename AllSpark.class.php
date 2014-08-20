@@ -439,7 +439,7 @@ if(!class_exists('AllSpark')) {
 		@internal */
 		function maybe_modify_plugin_update_info($ret, $action, $args) {
 			if($this->updateUseCustom) {
-				if($args->slug === $this->pluginSlug) {
+				if(isset($args->slug) && $args->slug === $this->pluginSlug) {
 					return $this->getCustomUpdateInfo($ret);
 				}
 			}
