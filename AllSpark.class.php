@@ -420,7 +420,7 @@ if(!class_exists('AllSpark')) {
 			//Call the custom update url to find out if an update is available
 			$update = $this->getCustomUpdateInfo();
 						
-			if($update && version_compare($update->version, $this->pluginInfo['Version'], '>')) {
+			if($update && isset($update->version) && version_compare($update->version, $this->pluginInfo['Version'], '>')) {
 				//Insert our custom update response
 				$myCustomUpdate = new stdClass();
 				$myCustomUpdate->slug = $update->slug;
@@ -457,10 +457,11 @@ if(!class_exists('AllSpark')) {
 			
 			$updateRequest = wp_remote_get($this->updateUseCustom.'?plugin='.$this->pluginSlug);
 			if(!is_wp_error($updateRequest) || 200 === wp_remote_retrieve_response_code($updateRequest)) {
-				$ret = json_decode($updateRequest['body']);
-				if($ret && $ret->status == 'ok') {
-					return unserialize($ret->data);
+				$request = json_decode($updateRequest['body']);
+				if($request && $request->status == 'ok') {
+					return unserialize($request->data);
 				}
+				
 			}
 			
 			//The request failed
