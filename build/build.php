@@ -23,8 +23,8 @@ if(!is_readable('readme.txt')) {
 }
 else {
 	//Run the readme parser
-	require_once(dirname(__FILE__) . '/Wordpress-Readme-Parser/markdown.php');
-	require_once(dirname(__FILE__) . '/Wordpress-Readme-Parser/ReadmeParser.php');
+	require_once(dirname(__FILE__) . '/WordPress-Readme-Parser/markdown.php');
+	require_once(dirname(__FILE__) . '/WordPress-Readme-Parser/ReadmeParser.php');
 	$readme_vars = Baikonur_ReadmeParser::parse_readme('readme.txt');
 	
 	//Remove unneccessary properties
