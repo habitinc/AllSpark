@@ -10,6 +10,8 @@ if ( ! defined('DOING_UPDATE') ) {
 
 /** Set to the base of the plugin data directories */
 define('PLUGIN_BASE', './');
+define('PUBLIC_PLUGIN_BASE', 'http://'.$_SERVER['SERVER_NAME'].'/'.PLUGIN_BASE);
+
 
 /** Set to true to enable debug logging */
 define('DEBUG', false);

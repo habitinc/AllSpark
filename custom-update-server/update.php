@@ -30,7 +30,6 @@ if(isset($_REQUEST['stats'])) {
 				
 				$pluginVersions[$name] = array(
 					"name"          => $pluginData->name,
-					"homepage"      => $pluginData->homepage,
 					"version"       => $pluginData->version,
 					"updated"       => $pluginData->last_updated,
 					"download_link" => PLUGIN_BASE.$name.'/'.$pluginData->download_link,
@@ -80,7 +79,7 @@ else {
 	else {
 		//
 		$ret->data->external = true;
-		$ret->data->download_link = PLUGIN_BASE.$plugin_slug.'/'.$ret->data->download_link;
+		$ret->data->download_link = PUBLIC_PLUGIN_BASE.$plugin_slug.'/'.$ret->data->download_link;
 		
 		if(isset($ret->data->sections)) {
 			if(DEBUG) {
