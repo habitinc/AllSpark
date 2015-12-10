@@ -40,11 +40,19 @@ else {
 }
 
 //Generate the zipped build
-shell_exec("AllSpark/build/build-zip.sh {$data->slug} {$data->version}");
+$output = array();
+$return_var = 0;
+exec("AllSpark/build/build-zip.sh {$data->slug} {$data->version}", $output, $return_var);
+if($return_var > 0) {
+	echo "Failed to run build-zip.sh, check output\n";
+	echo implode("\n", $output);
+	echo "\n";
+	exit(2);
+}
 $data->download_link = "{$data->slug}-{$data->version}.zip";
 
 //Write out the data.json
 if(false === file_put_contents('data.json', json_encode($data))) {
 	echo "Failed to write data.json file\n";
-	exit(2);
+	exit(3);
 }
