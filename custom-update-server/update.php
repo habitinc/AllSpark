@@ -36,6 +36,7 @@ if(isset($_REQUEST['stats'])) {
 				);
 			}
 		}
+		ksort($pluginVersions);
 		$ret->data = $pluginVersions;
 		
 	}
