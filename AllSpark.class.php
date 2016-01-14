@@ -58,6 +58,8 @@ if(!class_exists('AllSpark')) {
 		*/
 		protected $settings_url;
 		
+		protected $hasTranslationDir = false;
+		
 		/** 
 		The __construct method bootstraps the entire plugin. It should not be modified. It is possible to override it, but you probably don't want to
 		
@@ -88,6 +90,16 @@ if(!class_exists('AllSpark')) {
 			$this->add_filter('pre_http_request', 'maybe_block_wp_plugin_update', 10, 3);
 			$this->add_filter('pre_set_site_transient_update_plugins', 'maybe_register_plugin_update');
 			$this->add_filter('plugins_api', 'maybe_modify_plugin_update_info', 10, 3);
+			
+			//Load textdomain
+			if($this->hasTranslationDir) {
+				$pluginTextDomain = $this->pluginSlug;
+				$pluginTextBase = dirname($this->pluginBase).'/languages/';
+				
+				$this->add_action('plugins_loaded', function () use ($pluginTextDomain, $pluginTextBase) {
+					load_plugin_textdomain($pluginTextDomain, false, $pluginTextBase);
+				});
+			}
 		}
 		
 		/**
@@ -118,19 +130,26 @@ if(!class_exists('AllSpark')) {
 			$this->pluginBase = substr( $pluginRootDir . '/' . $name, 1 );
 			$this->pluginInfo = array_pop( $pluginInfo );
 			$this->pluginSlug = sanitize_title_with_dashes( $this->pluginInfo['Name'] );
+			
+			//While we've got the plugin's root handy, check if a language directory is available
+			$autoLangFolder = plugin_dir_path($classInfo->getFileName());
+			if(is_dir($autoLangFolder . 'languages')){
+				$this->hasTranslationDir = true;
+			}
 		}
 		
 		/**
 		Add the rewrite rules for APIs. And if we're using custom updates - remove any temporary plugin update info 
-		If you override this function, ensure you call `super` on it before returning		
+		If you override this function, ensure you call `super` on it before returning
 		
 		@internal	**/
 		function pluginDidActivate(){
 			$this->register_post_types();
 			flush_rewrite_rules();
 			
-			if( $this->updateBlockWP || $this->updateUseCustom )
+			if( $this->updateBlockWP || $this->updateUseCustom ) {
 				delete_site_transient( 'update_plugins' );
+			}
 		}
 		
 		/**
@@ -321,13 +340,13 @@ if(!class_exists('AllSpark')) {
 			//grab the plugin base
 			$plugin_base = $this->pluginBase;
 			
-			//this closure has a `use` declaration to get around the PHP 5.3 lack of `$this` in closures			
+			//this closure has a `use` declaration to get around the PHP 5.3 lack of `$this` in closures
 			$filter = function($links, $file) use ($settings_url, $unique_name, $plugin_base){
 						
 				if ($file == $plugin_base && wp_cache_get( $unique_name, __CLASS__ ) == false) {
 						
 					$settings_url = get_bloginfo('wpurl') . '/wp-admin/admin.php?page=' . $settings_url;
-					$settings_link = "<a href='$settings_url'>Settings</a>";
+					$settings_link = "<a href='$settings_url'>" . __('Settings', $this->pluginSlug) . "</a>";
 					array_unshift($links, $settings_link);
 
 					wp_cache_set( $unique_name, true, __CLASS__ );
