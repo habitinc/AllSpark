@@ -19,7 +19,7 @@ if(!class_exists('AllSpark')) {
 	abstract class AllSpark{
 
 		/**  @internal	**/
-		const VERSION = "0.0.8";
+		const VERSION = "0.1.0";
 		
 		/** Base file for plugin @see _loadPluginInfo()
 		@internal */
@@ -87,7 +87,7 @@ if(!class_exists('AllSpark')) {
 			$this->add_action('init');					//make it so subclasses can use `init` as well
 			
 			//Add filters for handling custom plugin updates
-			$this->add_filter('pre_http_request', 'maybe_block_wp_plugin_update', 10, 3);
+			$this->add_filter('http_request_args', 'maybe_block_wp_plugin_update', 10, 2);
 			$this->add_filter('pre_set_site_transient_update_plugins', 'maybe_register_plugin_update');
 			$this->add_filter('plugins_api', 'maybe_modify_plugin_update_info', 10, 3);
 			
@@ -372,19 +372,19 @@ if(!class_exists('AllSpark')) {
 		Hooks any http request going to api.wordpress.org/plugins/update-check/1.1 to remove all hints of this plugin. Have the implementing
 		class toggle either $updateBlockWP or $updateUseCustom to enable this behaviour.
 		@internal */
-		function maybe_block_wp_plugin_update($ret, $args, $url) {
+		function maybe_block_wp_plugin_update($args, $url) {
 			if(!$this->updateBlockWP && !$this->updateUseCustom) {
 				//We're not trying to block or override an update, just let everything continue
-				return $ret;
+				return $args;
 			}
 			if(false === strpos($url, 'api.wordpress.org/plugins/update-check')) {
 				//This is not the update-check URL, let it continue unhindered
-				return $ret;
+				return $args;
 			}
 			if(false === strpos($url, 'update-check/1.1') || !isset($args['body']['plugins'])) {
 				//This is a plugin-update request, but to a different API than we're capable of overriding. Boo
 				trigger_error('AllSpark '.self::VERSION.': Wordpress Core is using an unrecognized update mechanism. Please manually update your AllSpark plugins.', E_USER_WARNING);
-				return $ret;
+				return $args;
 			}
 				
 			//At this point, we know the HTTP request is for a plugin update using the 1.1 endpoint. We can modify this.
@@ -411,20 +411,7 @@ if(!class_exists('AllSpark')) {
 			//Reassemble the args
 			$args['body']['plugins'] = json_encode($pluginData);
 			
-			//Let any other pre_http_request filters run at this time
-			remove_filter('pre_http_request', array(&$this, 'maybe_block_wp_plugin_update'), 10); //if we ever do a remove_filter helper, switch it here
-			$filteredHTTPRequest = apply_filters('pre_http_request', false, $args, $url);
-			
-			//If the filteredHTTPRequest is false, then we're responsible to perform the HTTP request
-			if(false === $filteredHTTPRequest) {
-				$http = _wp_http_get_object();
-				$filteredHTTPRequest = $http->request($url, $args);
-			}
-			
-			//Add this filter back in
-			$this->add_filter('pre_http_request', 'maybe_block_wp_plugin_update', 10, 3);
-			
-			return $filteredHTTPRequest;
+			return $args;
 		}
 		
 		/**
@@ -441,7 +428,7 @@ if(!class_exists('AllSpark')) {
 			
 			//Call the custom update url to find out if an update is available
 			$update = $this->getCustomUpdateInfo();
-						
+			
 			if($update && isset($update->version) && version_compare($update->version, $this->pluginInfo['Version'], '>')) {
 				//Insert our custom update response
 				$myCustomUpdate = new stdClass();
