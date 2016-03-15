@@ -335,18 +335,19 @@ if(!class_exists('AllSpark')) {
 			$settings_url = $this->settings_url;
 			
 			// the $this is important - we want the subclass, not the super
-			$unique_name = get_class($this) . '_did_attach_settings_link';  
+			$unique_name = get_class($this) . '_did_attach_settings_link';
 			
 			//grab the plugin base
 			$plugin_base = $this->pluginBase;
+			$plugin_slug = $this->pluginSlug;
 			
 			//this closure has a `use` declaration to get around the PHP 5.3 lack of `$this` in closures
-			$filter = function($links, $file) use ($settings_url, $unique_name, $plugin_base){
+			$filter = function($links, $file) use ($settings_url, $unique_name, $plugin_base, $plugin_slug){
 						
 				if ($file == $plugin_base && wp_cache_get( $unique_name, __CLASS__ ) == false) {
 						
 					$settings_url = get_bloginfo('wpurl') . '/wp-admin/admin.php?page=' . $settings_url;
-					$settings_link = "<a href='$settings_url'>" . __('Settings', $this->pluginSlug) . "</a>";
+					$settings_link = "<a href='$settings_url'>" . __('Settings', $plugin_slug) . "</a>";
 					array_unshift($links, $settings_link);
 
 					wp_cache_set( $unique_name, true, __CLASS__ );
